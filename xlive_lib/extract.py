@@ -51,7 +51,7 @@ def nameSession(name_str):
 	log.write("".join(log_copy_l))
 	log.close()
 
-	print "Session named successfully!"
+	print("Session named successfully!")
 	
 
 
@@ -69,16 +69,16 @@ def getSessionInfo():
 
 	total_length_bytes=total_length*4
 
-	print "no_channels =" + str(no_channels)
-	print "sample_rate =" + str(sample_rate)
-	print "no_takes =" + str(no_takes)
-	print "no_markers =" + str(no_markers)
-	print "Total audio length in bytes = " + str(total_length_bytes)
-	print "Total audio samples per channel = " + str(total_length)
-	print "Total audio time per channel = " + str(total_length/sample_rate)
+	print("no_channels =" + str(no_channels))
+	print("sample_rate =" + str(sample_rate))
+	print("no_takes =" + str(no_takes))
+	print("no_markers =" + str(no_markers))
+	print("Total audio length in bytes = " + str(total_length_bytes))
+	print("Total audio samples per channel = " + str(total_length))
+	print("Total audio time per channel = " + str(total_length/sample_rate))
 
 	for i in range(no_markers):
-		print "Marker " + str(i) + " at " + str(take_markers[i]) +" samples or " + str(take_markers[i]/sample_rate) + " seconds"
+		print("Marker " + str(i) + " at " + str(take_markers[i]) +" samples or " + str(take_markers[i]/sample_rate) + " seconds")
 
 
 
@@ -107,13 +107,13 @@ def extractSession():
 
 
 	try:
-		os.mkdir( "sesssion_"+ session_str, 0755)
+		os.mkdir( "sesssion_"+ session_str, 0o755)
 	except:
-		print "please remove existing folder"
+		print("please remove existing folder")
 		return
 
 	waves=create_waves("sesssion_"+ session_str, total_length,sample_rate, no_channels)
-	print "Unpacking audio data, this may take a  while :) \n" 
+	print("Unpacking audio data, this may take a  while :) \n") 
 
 	#get data of takes and write files
 
@@ -138,7 +138,7 @@ def extractSession():
 	end=timer()
 
 
-	print "process completed in="+str(end-start)+"sec"
+	print("process completed in="+str(end-start)+"sec")
 	#raw_input()
 
 
@@ -164,13 +164,13 @@ def extractChannel(channel_no):
 
 
 	try:
-		os.mkdir( "channel_" +str(channel_no) + "_"+ session_str, 0755)
+		os.mkdir( "channel_" +str(channel_no) + "_"+ session_str, 0o755)
 	except:
-		print "please remove existing folder"
+		print("please remove existing folder")
 		return
 
 	wave=create_wave("channel_" +str(channel_no) + "_" + session_str, total_length,sample_rate, channel_no)
-	print "Unpacking audio data, this may take a  while :) \n" 
+	print("Unpacking audio data, this may take a  while :) \n") 
 
 	#get data of takes and write files
 	for i in range(no_takes):
@@ -192,7 +192,7 @@ def extractChannel(channel_no):
 
 	end=timer()
 
-	print "process completed in="+str(end-start)+"sec"
+	print("process completed in="+str(end-start)+"sec")
 	#raw_input()
 
 
@@ -221,13 +221,13 @@ def extractSessionMarker(start_marker, stop_marker):
 	folder_name = "sesssion_marker_%d_%d_" %(start_marker,stop_marker) + session_str
 
 	try:
-		os.mkdir( folder_name, 0755)
+		os.mkdir( folder_name, 0o755)
 	except:
-		print "please remove existing folder"
+		print("please remove existing folder")
 		return
 
 	waves=create_waves(folder_name, total_length,sample_rate, no_channels)
-	print "Unpacking audio data, this may take a  while :) \n" 
+	print("Unpacking audio data, this may take a  while :) \n") 
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsMarker(start_marker,stop_marker,no_takes,take_size,take_markers,no_channels)
 
@@ -256,7 +256,7 @@ def extractSessionMarker(start_marker, stop_marker):
 	end=timer()
 
 
-	print "process completed in="+str(end-start)+"sec"
+	print("process completed in="+str(end-start)+"sec")
 
 
 ## Extract a single channel
@@ -285,13 +285,13 @@ def extractChannelMarker( channel_no, start_marker, stop_marker):
 	folder_name = "channel_marker_%d_%d_" %(start_marker,stop_marker) + str(channel_no) + "_"+ session_str
 
 	try:
-		os.mkdir( folder_name, 0755)
+		os.mkdir( folder_name, 0o755)
 	except:
-		print "please remove existing folder"
+		print("please remove existing folder")
 		return
 
 	wave=create_wave(folder_name, total_length,sample_rate, channel_no)
-	print "Unpacking audio data, this may take a  while :) \n" 
+	print("Unpacking audio data, this may take a  while :) \n") 
 
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsMarker(start_marker,stop_marker,no_takes,take_size,take_markers,no_channels)
@@ -318,7 +318,7 @@ def extractChannelMarker( channel_no, start_marker, stop_marker):
 
 	end=timer()
 
-	print "process completed in="+str(end-start)+"sec"
+	print("process completed in="+str(end-start)+"sec")
 
 
 ## Extract session user defined
@@ -349,13 +349,13 @@ def extractSessionTime( start_time, stop_time):
 	folder_name = "sesssion_time_%d_%d_" %(start_time,stop_time) + session_str
 
 	try:
-		os.mkdir( folder_name, 0755)
+		os.mkdir( folder_name, 0o755)
 	except:
-		print "please remove existing folder"
+		print("please remove existing folder")
 		return
 
 	waves=create_waves(folder_name, total_length,sample_rate, no_channels)
-	print "Unpacking audio data, this may take a  while :) \n" 
+	print("Unpacking audio data, this may take a  while :) \n") 
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsTime(start_time,stop_time,no_takes,take_size,sample_rate,no_channels)
 
@@ -384,7 +384,7 @@ def extractSessionTime( start_time, stop_time):
 	end=timer()
 
 
-	print "process completed in="+str(end-start)+"sec"
+	print("process completed in="+str(end-start)+"sec")
 
 
 ## Extract a single channel
@@ -415,13 +415,13 @@ def extractChannelTime(channel_no, start_time, stop_time):
 	folder_name = "channel_time_%d_%d_" %(start_time,start_time) + str(channel_no) + "_"+ session_str
 
 	try:
-		os.mkdir( folder_name, 0755)
+		os.mkdir( folder_name, 0o755)
 	except:
-		print "please remove existing folder"
+		print("please remove existing folder")
 		return
 
 	wave=create_wave(folder_name, total_length,sample_rate, channel_no)
-	print "Unpacking audio data, this may take a  while :) \n" 
+	print("Unpacking audio data, this may take a  while :) \n") 
 
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsTime(start_time,stop_time,no_takes,take_size,sample_rate,no_channels)
@@ -450,4 +450,4 @@ def extractChannelTime(channel_no, start_time, stop_time):
 
 
 
-	print "process completed in="+str(end-start)+"sec"
+	print("process completed in="+str(end-start)+"sec")

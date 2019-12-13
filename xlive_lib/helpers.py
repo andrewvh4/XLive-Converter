@@ -24,7 +24,7 @@ def readLogFile():
 	try:
 		log=open("se_log.bin","rb")
 	except:
-		print "log file not found !"
+		print("log file not found !")
 		return (0,0,0,0,0,0,0,0,0,0)
 		
 	
@@ -207,11 +207,11 @@ def openTake(i,take,take_size):
 		else:
 			take.append(open("00000" + str(i+1)+".wav" ,"rb"))
 	except:
-		print "take no %d not found! \n" % (i)
+		print("take no %d not found! \n" % (i))
 		return 1
 
-	print "reading take %d \n" % (i+1)
-	print "take length %d \n" % (take_size[i])
+	print("reading take %d \n" % (i+1))
+	print("take length %d \n" % (take_size[i]))
 
 	return 0
 ##
