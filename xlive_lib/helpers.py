@@ -2,7 +2,20 @@
 # This module contains functions for convert to and from the X live WAVe format
 import struct
 import os
+from codecs import encode
 
+def readBytesInt(file, numBytes):
+	original = file.read(4)
+	reversed = original[::-1]
+	
+	return(int(encode(reversed, 'hex'),16))
+	
+	
+def readBytesStr(file, numBytes):
+	original = file.read(4)
+	reversed = original[::-1]
+	
+	return(str(encode(reversed, 'hex'))[2:-1])
 
 ## 
 def readLogFile():
@@ -30,30 +43,32 @@ def readLogFile():
 	
 
 	#get paramters
-	session_str = log.read(4)[::-1].encode('hex')
-	session_no	= int(session_str,16)
-	no_channels	= int(log.read(4)[::-1].encode('hex'),16)
-	sample_rate	= int(log.read(4)[::-1].encode('hex'),16)
-	date_code	= int(log.read(4)[::-1].encode('hex'),16)
-	no_takes	= int(log.read(4)[::-1].encode('hex'),16)
-	no_markers	= int(log.read(4)[::-1].encode('hex'),16)
-	total_length= int(log.read(4)[::-1].encode('hex'),16)		#samples per channel
+	session_str = readBytesStr(log, 4)
+	session_no	= int(session_str, 16)
+	no_channels	= readBytesInt(log, 4)
+	sample_rate	= readBytesInt(log, 4)
+	date_code	= readBytesInt(log, 4)
+	no_takes	= readBytesInt(log, 4)
+	no_markers	= readBytesInt(log, 4)
+	total_length= readBytesInt(log, 4)		#samples per channel
 
 	##get data of log
 	take_size= []
 	for i in range(no_takes):
-		take_size.append(int(log.read(4)[::-1].encode('hex'),16))				#samples
-
+		try:
+			take_size.append(readBytesInt(log, 4))			#samples
+		except:
+			pass
 	#dummy reads  read the rest of the not used take lengths
 	for i in range(256-no_takes):			#MAX_NO_TAKE
 		log.read(4)
 
 	take_markers=[]
 	for i in range(no_markers):
-		take_markers.append(int(log.read(4)[::-1].encode('hex'),16))
+		take_markers.append(readBytesInt(log, 4))
 
 	#log.seek(0,2)
-	#print "file size=" + str(log.tell()) 
+	#print("file size=" + str(log.tell()))
 
 	log.close()
 
@@ -66,11 +81,11 @@ def create_waves(folder,no_samples,sample_rate, no_waves):
 
 	chan = []
 	for i in range(no_waves):
-		chan.append(open( folder+ "/" + "ch_"+str(i+1)+".wav","wb"))
-		chan[i].write("RIFF")
+		chan.append(open(folder+ "/" + "ch_"+str(i+1)+".wav","wb"))
+		chan[i].write(b"RIFF")
 		chan[i].write(struct.pack('<I',bytes_datachunk+36))
-		chan[i].write("WAVE")
-		chan[i].write("fmt ")
+		chan[i].write(b"WAVE")
+		chan[i].write(b"fmt ")
 		chan[i].write(struct.pack('<I',16))
 		chan[i].write(struct.pack('<H',1))						#wFormatTag
 		chan[i].write(struct.pack('<H',1))
@@ -78,7 +93,7 @@ def create_waves(folder,no_samples,sample_rate, no_waves):
 		chan[i].write(struct.pack('<I',sample_rate*3))			#dwAvgBytesPerSec
 		chan[i].write(struct.pack('<H',3))						#wBlockAlign
 		chan[i].write(struct.pack('<H',24))							#wBitsPerSample
-		chan[i].write("data")
+		chan[i].write(b"data")
 		chan[i].write(struct.pack('<I',bytes_datachunk)) 
 
 	return chan
@@ -116,16 +131,16 @@ def create_wave(folder,no_samples,sample_rate, ch_number):
 ##
 def readWriteAudio(take,takesize,bufsize,no_channels,waves_to):
 	#read and write audio
-	for k in range((takesize*4)/bufsize):
+	for k in range(int((takesize*4)/bufsize)):
 		read_buf=take.read(bufsize)
 		
 
 		for j in range(no_channels):
 			idx_read_buf=j*4
-			ch_buffer= ""
-			for k in range(bufsize/(no_channels*4)):
-				ch_buffer+=read_buf[(idx_read_buf+1):(idx_read_buf+4)]  # 3 bytes
-				idx_read_buf=idx_read_buf+ no_channels*4
+			ch_buffer= b""
+			for k in range(int(bufsize/(no_channels*4))):
+				ch_buffer += read_buf[(idx_read_buf+1):(idx_read_buf+4)]  # 3 bytes
+				idx_read_buf=idx_read_buf + no_channels*4
 
 			waves_to[j].write((ch_buffer))
 	
@@ -135,11 +150,11 @@ def readWriteAudio(take,takesize,bufsize,no_channels,waves_to):
 	read_buf=take.read(buf_size_rest)
 	idx_read_buf=0
 
-
+	print("Writing")
 	for j in range(no_channels):
 		idx_read_buf=j*4
-		ch_buffer= ""
-		for k in range(buf_size_rest/(no_channels*4)):
+		ch_buffer= b""
+		for k in range(int(buf_size_rest/(no_channels*4))):
 			ch_buffer+=read_buf[(idx_read_buf+1):(idx_read_buf+4)]  # 3 bytes
 			idx_read_buf=idx_read_buf+ no_channels*4
 
@@ -207,11 +222,11 @@ def openTake(i,take,take_size):
 		else:
 			take.append(open("00000" + str(i+1)+".wav" ,"rb"))
 	except:
-		print("take no %d not found! \n" % (i))
+		print("take no "+str(i)+" not found!")
 		return 1
 
-	print("reading take %d \n" % (i+1))
-	print("take length %d \n" % (take_size[i]))
+	print("reading take "+str(i))
+	print("take length "+str(take_size[i]))
 
 	return 0
 ##

@@ -69,10 +69,11 @@ def getSessionInfo():
 
 	total_length_bytes=total_length*4
 
-	print("no_channels =" + str(no_channels))
-	print("sample_rate =" + str(sample_rate))
-	print("no_takes =" + str(no_takes))
-	print("no_markers =" + str(no_markers))
+	print("Session ID: " + session_str)
+	print("Number of Channels = " + str(no_channels))
+	print("Sample Rate = " + str(sample_rate))
+	print("Number of Takes = " + str(no_takes))
+	print("Number of Markers = " + str(no_markers))
 	print("Total audio length in bytes = " + str(total_length_bytes))
 	print("Total audio samples per channel = " + str(total_length))
 	print("Total audio time per channel = " + str(total_length/sample_rate))
@@ -107,13 +108,13 @@ def extractSession():
 
 
 	try:
-		os.mkdir( "sesssion_"+ session_str, 0o755)
+		os.mkdir( "session_"+ session_str, 0o755)
 	except:
 		print("please remove existing folder")
 		return
 
-	waves=create_waves("sesssion_"+ session_str, total_length,sample_rate, no_channels)
-	print("Unpacking audio data, this may take a  while :) \n") 
+	waves=create_waves("session_"+ session_str, total_length,sample_rate, no_channels)
+	print("Unpacking audio data, this may take a  while :)" )
 
 	#get data of takes and write files
 
@@ -170,7 +171,7 @@ def extractChannel(channel_no):
 		return
 
 	wave=create_wave("channel_" +str(channel_no) + "_" + session_str, total_length,sample_rate, channel_no)
-	print("Unpacking audio data, this may take a  while :) \n") 
+	print("Unpacking audio data, this may take a  while :)")
 
 	#get data of takes and write files
 	for i in range(no_takes):
@@ -227,7 +228,7 @@ def extractSessionMarker(start_marker, stop_marker):
 		return
 
 	waves=create_waves(folder_name, total_length,sample_rate, no_channels)
-	print("Unpacking audio data, this may take a  while :) \n") 
+	print("Unpacking audio data, this may take a  while :)")
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsMarker(start_marker,stop_marker,no_takes,take_size,take_markers,no_channels)
 
@@ -291,7 +292,7 @@ def extractChannelMarker( channel_no, start_marker, stop_marker):
 		return
 
 	wave=create_wave(folder_name, total_length,sample_rate, channel_no)
-	print("Unpacking audio data, this may take a  while :) \n") 
+	print("Unpacking audio data, this may take a  while :)")
 
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsMarker(start_marker,stop_marker,no_takes,take_size,take_markers,no_channels)
@@ -355,7 +356,7 @@ def extractSessionTime( start_time, stop_time):
 		return
 
 	waves=create_waves(folder_name, total_length,sample_rate, no_channels)
-	print("Unpacking audio data, this may take a  while :) \n") 
+	print("Unpacking audio data, this may take a  while :)")
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsTime(start_time,stop_time,no_takes,take_size,sample_rate,no_channels)
 
@@ -421,7 +422,7 @@ def extractChannelTime(channel_no, start_time, stop_time):
 		return
 
 	wave=create_wave(folder_name, total_length,sample_rate, channel_no)
-	print("Unpacking audio data, this may take a  while :) \n") 
+	print("Unpacking audio data, this may take a  while :) ") 
 
 
 	(start_take,end_take,s_time_x_ch,e_time_x_ch)=calcLimitsTime(start_time,stop_time,no_takes,take_size,sample_rate,no_channels)

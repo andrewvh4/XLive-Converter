@@ -44,7 +44,7 @@ def createSession(name_str, markers):
 		print("no wave files found \n")
 		return
 
-	print("%d wav files found \n" %(no_chls))
+	print(str(no_chls) + "%d wav files found")
 
 	# calc fill channes, in case the number of wav files does not match 8, 16 or 32
 	if no_chls <= 8:
@@ -55,7 +55,7 @@ def createSession(name_str, markers):
 		fill_chls = 32 - no_chls
 	else:
 		no_chls = 32							#limit to 32 channles
-		print("more than 32 channels found, exceeding channels will be ignored! \n ")
+		print("more than 32 channels found, exceeding channels will be ignored!")
 
 	#read wav header
 	file_size=[]
@@ -65,13 +65,13 @@ def createSession(name_str, markers):
 	for i in range(no_chls):
 		riff=waves[i].read(4)
 		if riff != "RIFF":
-			print("ch_%d.wav not a RIFF file! \n" %(i+1))
+			print("ch_" + str(i+1) + ".wav not a RIFF file!")
 			return
 
 		file_size.append(int(waves[i].read(4)[::-1].encode('hex'),16) )# + 8
 		wave=waves[i].read(4)
 		if wave != "WAVE":
-			print("ch_%d.wav not a WAVE file! \n" %(i+1))
+			print("ch_" + str(i+1) + ".wav not a WAVE file!")
 			return
 
 		leave = 0
@@ -81,22 +81,22 @@ def createSession(name_str, markers):
 			if temp == "fmt ":
 				fmt_size = int(waves[i].read(4)[::-1].encode('hex'),16)
 				if fmt_size != 16:
-					print("ch_%d.wav wrong fmt_size! \n" %(i+1))
+					print("ch_" + str(i+1) + ".wav wrong fmt_size!")
 					return
 
 				wav_format =int(waves[i].read(2)[::-1].encode('hex'),16)
 				if wav_format != 1:
-					print("ch_%d.wav WAV format not supported! \n" %(i+1))
+					print("ch_" + str(i+1) + ".wav WAV format not supported!")
 					return
 
 				wav_chs =int(waves[i].read(2)[::-1].encode('hex'),16)
 				if wav_chs != 1:
-					print("ch_%d.wav WAV format not supported! \n" %(i+1))
+					print("ch_" + str(i+1) + ".wav WAV format not supported!")
 					return
 
 				wav_samp_rate.append(int(waves[i].read(4)[::-1].encode('hex'),16))
 				if wav_samp_rate[i] != 48000 and  wav_samp_rate != 44100:
-					print("ch_%d.wav WAV sample rate not supported! \n" %(i+1))
+					print("ch_" + str(i+1) + ".wav WAV sample rate not supported!")
 					return
 
 				dwAvgBytesPerSec = int(waves[i].read(4)[::-1].encode('hex'),16)
@@ -104,7 +104,7 @@ def createSession(name_str, markers):
 
 				bits_per_samp = int(waves[i].read(2)[::-1].encode('hex'),16)
 				if bits_per_samp != 24:
-					print("ch_%d.wav WAV bit resolution not supported! \n" %(i+1))
+					print("ch_" + str(i+1) + ".wav WAV bit resolution not supported!")
 					return
 
 				leave += 1
@@ -126,11 +126,11 @@ def createSession(name_str, markers):
 	audio_samprate = wav_samp_rate[0]
 	for i in range(no_chls):
 		if data_size[i] != audio_len:
-			print("files are not of the same length! \n")
+			print("files are not of the same length!")
 			return
 
 		if wav_samp_rate[i] != audio_samprate:
-			print("files are not of the same sample rate! \n")
+			print("files are not of the same sample rate!")
 			return
  		
 
@@ -172,7 +172,7 @@ def createSession(name_str, markers):
 
 	marker_vec.append(0)										# maker_no+1 must be zero
 
-	print("Creating log file... \n")
+	print("Creating log file...")
 	dirname= hex(session_name)[2:10] 
 
 	os.mkdir(dirname, 0o755)
@@ -211,7 +211,7 @@ def createSession(name_str, markers):
 
 	log_file.close()
 
-	print("Packing audio data, this may take a  while :) \n")
+	print("Packing audio data, this may take a  while :)")
 
 
 	#for j in range(no_chls):
